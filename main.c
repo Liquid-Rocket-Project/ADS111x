@@ -90,8 +90,8 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  ADS_Init(ADS_ADDRESS_GND);
-  uint16_t data = 0;
+  ADS_Init(ADS_ADDRESS_GND); // init adc
+  uint16_t data = 0; // storage
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,7 +101,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	data = ADS_SampleChannel(0x00);
+	data = ADS_SampleChannel(0x00); // Sample channel 0
 	HAL_Delay(1000);
   }
   /* USER CODE END 3 */

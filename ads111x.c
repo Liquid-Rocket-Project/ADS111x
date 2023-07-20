@@ -1,4 +1,8 @@
-
+/*
+ * ads111x.c
+ * author: Nick Fan
+ * date: 7/2023
+ */
 
 #include "ads111x.h"
 
