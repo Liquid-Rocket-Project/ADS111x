@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ads111x.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,8 +91,21 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  ADS_Init(ADS_ADDRESS_GND); // init adc
-  uint16_t data = 0; // storage
+  // ************************************************** //
+  uint16_t data[4] = {};
+  uint8_t sendBuff[20] = {};
+
+  // default config values
+  ADS111x ads1 = ADS_Default_Struct(ADS_ADDRESS_GND);
+
+  // I2C functions setup
+  ads1.init = I2C2_Init;
+  ads1.selectDevice = I2C2_SetDevice;
+  ads1.memWrite = I2C2_MemWrite;
+  ads1.memRead = I2C2_MemRead;
+
+  ADS_InitSerial(&ads1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,7 +115,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	data = ADS_SampleChannel(0x00); // Sample channel 0
+	//data = ADS_SampleChannel(0x00);
+	data[0] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P0);
+	data[1] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P1);
+	data[2] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P2);
+	data[3] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P3);
+	sprintf(sendBuff, "%d %d %d %d", data[0], data[1], data[2], data[3]);
+	HAL_UART_Transmit(&huart3, sendBuff, sizeof(sendBuff), HAL_MAX_DELAY);
+
 	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
