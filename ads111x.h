@@ -9,13 +9,14 @@
 
 #include "i2c2.h"
 
-// I2C Device Addresses
+
+// ADS I2C Device Address (depending on ADDR Pin)
 #define ADS_ADDRESS_GND				(0b1001000 << 1U)
 #define ADS_ADDRESS_VDD				(0b1001001 << 1U)
 #define ADS_ADDRESS_SDA				(0b1001010 << 1U)
 #define ADS_ADDRESS_SCL				(0b1001011 << 1U)
 
-// ADS Registers
+// ADS Data Registers
 #define ADS_REG_CONVERSION_PTR		0x0U
 #define ADS_REG_CONFIG_PTR			0x1U
 #define ADS_REG_LO_THRESH_PTR		0x2U
@@ -95,12 +96,42 @@ typedef struct {
 
 } ADS111x;
 
-
 // Function prototypes
+
+/*
+ * @brief Creates and returns an ADS111x struct with configs setup (no serial)
+ * @param DAddress the device address of the ADS
+ * @returns the newly created ADS111x struct
+ */
 inline ADS111x ADS_Default_Struct(uint8_t DAddress);
+
+/*
+ * @brief Initializes ADC and I2C
+ * @param adc the ADS111x to initialize serial for (serial functions 
+ * in ADS struct must be initialized before calling this function)
+ */
 void ADS_InitSerial(ADS111x *adc);
+
+/*
+ * @brief Samples the indicated channel
+ * @param adc the ADS111x from which to use configs and I2C
+ * @param channel the analog channel number
+ * @returns the 16-bit reading from the ADS
+ */
 uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel);
+
+/*
+ * @brief Requests the start of a conversion in the indicated channel
+ * @param adc the ADS111x from which to use configs and I2C
+ * @param channel the analog channel number
+ */
 void ADS_StartConversion(ADS111x *adc, uint8_t channel);
+
+/*
+ * @brief Reads the last conversion
+ * @param adc the ADS111x from which to use configs and I2C
+ * @returns the 16-bit reading from the ADS
+ */
 uint16_t ADS_ReadLastConversion(ADS111x *adc);
 
 #endif // ADS111X_H
