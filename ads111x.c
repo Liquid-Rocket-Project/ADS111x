@@ -46,10 +46,12 @@ uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
+	// Wait for adc to be no longer in conversion
 	rxdata[0] = 0;
 	while (!(rxdata[0] & ADS_CONFIG_OS)) {
 		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
 	}
+
 	// Configure and start conversion
 	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);
 
@@ -67,6 +69,7 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
+	// Wait for adc to be no longer in conversion
 	rxdata[0] = 0;
 	while (!(rxdata[0] & ADS_CONFIG_OS)) {
 		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
