@@ -11,6 +11,7 @@ static uint8_t rxdata[2] = {};
 static uint8_t configBuffer[2] = {};
 
 
+
 static inline void Get_Configs(ADS111x *adc, uint8_t channel, uint8_t *configsBuff) {
 	/* You can edit this function along with the base config
 	 * macros to adjust what gets set each time
@@ -45,6 +46,10 @@ uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
+	rxdata[0] = 0;
+	while (!(rxdata[0] & ADS_CONFIG_OS)) {
+		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
+	}
 	// Configure and start conversion
 	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);
 
@@ -61,6 +66,11 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel) {
 
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
+
+	rxdata[0] = 0;
+	while (!(rxdata[0] & ADS_CONFIG_OS)) {
+		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
+	}
 
 	// Configure and start conversion
 	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);

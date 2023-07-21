@@ -122,7 +122,7 @@ int main(void)
 	data[3] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P3);
 	sprintf(sendBuff, "%d %d %d %d", data[0], data[1], data[2], data[3]);
 	HAL_UART_Transmit(&huart3, sendBuff, sizeof(sendBuff), HAL_MAX_DELAY);
-	HAL_Delay(100);
+	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
