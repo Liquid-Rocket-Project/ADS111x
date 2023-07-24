@@ -16,8 +16,8 @@ static inline void Get_Configs(ADS111x *adc, uint8_t channel, uint8_t *configsBu
 	/* You can edit this function along with the base config
 	 * macros to adjust what gets set each time
 	 */
-	configsBuff[0] = ADS_CONFIG_LOWER_BASE | adc->datarate;
-	configsBuff[1] = ADS_CONFIG_UPPER_BASE | ADS_CONFIG_OS | adc->mode
+	configsBuff[1] = ADS_CONFIG_LOWER_BASE | adc->datarate;
+	configsBuff[0] = ADS_CONFIG_UPPER_BASE | ADS_CONFIG_OS | adc->mode
 				| adc->gain | channel;
 }
 
@@ -58,7 +58,7 @@ uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
 
-	return (uint16_t) ((rxdata[1] << 8) | rxdata[0]);
+	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
 
 }
 
@@ -86,5 +86,15 @@ uint16_t ADS_ReadLastConversion(ADS111x *adc) {
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
 
-	return (uint16_t) ((rxdata[1] << 8) | rxdata[0]);
+	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
+}
+
+uint16_t ADS_ReadConfigs(ADS111x *adc) {
+	// Set traget adc
+	adc->selectDevice(adc->DAddress);
+
+	// Read config register
+	adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
+
+	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
 }

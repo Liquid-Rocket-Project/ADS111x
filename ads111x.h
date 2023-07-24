@@ -27,8 +27,8 @@
 #define ADS_CONFIG_MODE				(0x1U << 0U)
 #define ADS_CONFIG_MODE_CONT		(0x0U << 0U)
 #define ADS_CONFIG_MODE_SS			ADS_CONFIG_MODE
-#define ADS_CONFIG_MUX_Pos			5U
-#define ADS_CONFIG_PGA_Pos			2U
+#define ADS_CONFIG_MUX_Pos			4U
+#define ADS_CONFIG_PGA_Pos			1U
 #define ADS_CONFIG_DR_Pos			5U
 #define ADS_CONFIG_COMP_MODE		(0x1U << 4U)
 #define ADS_CONFIG_COMP_POL			(0x1U << 3U)
@@ -107,7 +107,7 @@ inline ADS111x ADS_Default_Struct(uint8_t DAddress);
 
 /*
  * @brief Initializes ADC and I2C
- * @param adc the ADS111x to initialize serial for (serial functions 
+ * @param adc the ADS111x to initialize serial for (serial functions
  * in ADS struct must be initialized before calling this function)
  */
 void ADS_InitSerial(ADS111x *adc);
@@ -133,5 +133,12 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel);
  * @returns the 16-bit reading from the ADS
  */
 uint16_t ADS_ReadLastConversion(ADS111x *adc);
+
+/*
+ * @brief Reads the config register
+ * @param adc the ADS111x from which to use configs and I2C
+ * @returns the 16-bit config register value from the ADS
+ */
+uint16_t ADS_ReadConfigs(ADS111x *adc);
 
 #endif // ADS111X_H
