@@ -23,7 +23,7 @@
 // Function prototypes
 
 /*
- * @brief Initializes I2C2 peripheral for PF1 and PF0
+ * @brief Initializes I2C2 peripheral for PF1 (SCL) and PF0 (SDA)
  */
 void I2C2_Init(void);
 
