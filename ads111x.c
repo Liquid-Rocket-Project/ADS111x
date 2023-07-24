@@ -23,7 +23,7 @@ static inline void Get_Configs(ADS111x *adc, uint8_t channel, uint8_t *configsBu
 
 extern ADS111x ADS_Default_Struct(uint8_t DAddress) {
 	ADS111x ret = {
-		ADS_PGA_2_048V,
+		ADS_PGA_4_096V,
 		ADS_CONFIG_MODE,
 		ADS_DR_128_SPS,
 		DAddress,
@@ -46,14 +46,14 @@ uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
+	// Configure and start conversion
+	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);
+
 	// Wait for adc to be no longer in conversion
 	rxdata[0] = 0;
 	while (!(rxdata[0] & ADS_CONFIG_OS)) {
 		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
 	}
-
-	// Configure and start conversion
-	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);
 
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
@@ -69,12 +69,6 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
-	// Wait for adc to be no longer in conversion
-	rxdata[0] = 0;
-	while (!(rxdata[0] & ADS_CONFIG_OS)) {
-		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
-	}
-
 	// Configure and start conversion
 	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_CONFIG_BUFFER_SIZE, 1000);
 }
@@ -82,6 +76,12 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel) {
 uint16_t ADS_ReadLastConversion(ADS111x *adc) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
+
+	// Wait for adc to be no longer in conversion
+	rxdata[0] = 0;
+	while (!(rxdata[0] & ADS_CONFIG_OS)) {
+		adc->memRead(ADS_REG_CONFIG_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
+	}
 
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_CONFIG_BUFFER_SIZE, 1000);
