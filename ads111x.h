@@ -7,14 +7,14 @@
 #ifndef ADS111X_H
 #define ADS111X_H
 
-#include "i2c2.h"
+#include <stdint.h>
 
 
 // ADS I2C Device Address (depending on ADDR Pin)
-#define ADS_ADDRESS_GND				(0b1001000 << 1U)
-#define ADS_ADDRESS_VDD				(0b1001001 << 1U)
-#define ADS_ADDRESS_SDA				(0b1001010 << 1U)
-#define ADS_ADDRESS_SCL				(0b1001011 << 1U)
+#define ADS_ADDRESS_GND				(0b1001000U << 1U)
+#define ADS_ADDRESS_VDD				(0b1001001U << 1U)
+#define ADS_ADDRESS_SDA				(0b1001010U << 1U)
+#define ADS_ADDRESS_SCL				(0b1001011U << 1U)
 
 // ADS Data Registers
 #define ADS_REG_CONVERSION_PTR		0x0U
@@ -34,6 +34,11 @@
 #define ADS_CONFIG_COMP_POL			(0x1U << 3U)
 #define ADS_CONFIG_COMP_LAT			(0x1U << 2U)
 #define ADS_CONFIG_COMP_QUE_Pos		0U
+
+#define ADS_COMP_QUE_DISABLE		0b11U
+#define ADS_COMP_QUE_1_CONV			0b00U
+#define ADS_COMP_QUE_2_CONV			0b01U
+#define ADS_COMP_QUE_4_CONV			0b10U
 
 // Channel Mux selection
 #define ADS_MUX_DIFF_P0_N1			(0b000U << ADS_CONFIG_MUX_Pos)
@@ -65,14 +70,20 @@
 #define ADS_DR_475_SPS				(0b110U << ADS_CONFIG_DR_Pos)
 #define ADS_DR_860_SPS				(0b111U << ADS_CONFIG_DR_Pos)
 
+// Lo Thresh
+#define ADS_LO_THRESH_ALERT			(0x1U << 15U)
+
+// Hi Thresh
+#define ADS_HI_THRESH_ALERT			(0x1U << 7U)
+
 // Quickstart
 #define ADS_CONFIG_UPPER_DEFAULT	0b10000100U
 #define ADS_CONFIG_LOWER_DEFAULT	0b10000011U
 
 #define ADS_CONFIG_UPPER_BASE		0b10000000U
-#define ADS_CONFIG_LOWER_BASE		0b00000011U
+#define ADS_CONFIG_LOWER_BASE		0b00000000U
 
-#define ADS_CONFIG_BUFFER_SIZE		2U
+#define ADS_REGISTER_SIZE			2U
 
 // Function pointers
 typedef void (*I2C_Init) (void);
@@ -86,6 +97,7 @@ typedef struct {
 	uint8_t gain;
 	uint8_t mode;
 	uint8_t datarate;
+	uint8_t interruptEn;
 	uint8_t DAddress;
 
 	// Serial interface
@@ -140,5 +152,12 @@ uint16_t ADS_ReadLastConversion(ADS111x *adc);
  * @returns the 16-bit config register value from the ADS
  */
 uint16_t ADS_ReadConfigs(ADS111x *adc);
+
+/*
+ * @brief Enables conversion ready pin
+ * @param adc the ADS111x from which to use configs and I2C
+ * @param compQue the ADS_COMP_QUE (comparator settings) to use
+ */
+void ADS_EnableConversionReady(ADS111x *adc, uint8_t compQue);
 
 #endif // ADS111X_H
