@@ -94,7 +94,7 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 // ************************************************** //
-  uint16_t data[5] = {};
+  int16_t data[5] = {};
   uint8_t sendBuff[30] = {};
 
   // default config values
@@ -123,7 +123,7 @@ int main(void)
 	//data[2] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P2);
 	//data[3] = ADS_SampleChannel(&ads1, ADS_MUX_SING_P3);
 	//data[4] = ADS_ReadConfigs(&ads1);
-	sprintf(sendBuff, "%u %u %u %u %u\n", data[0], data[1], data[2], data[3], data[4]);
+	sprintf(sendBuff, "%i %i %i %i %i\n", data[0], data[1], data[2], data[3], data[4]);
 	HAL_UART_Transmit(&huart3, sendBuff, strlen(sendBuff), HAL_MAX_DELAY);
 	HAL_Delay(300);
   }
