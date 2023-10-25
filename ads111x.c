@@ -21,7 +21,7 @@ static inline void Get_Configs(ADS111x *adc, uint8_t channel, uint8_t *configsBu
 				| adc->gain | channel;
 }
 
-extern ADS111x ADS_Default_Struct(uint8_t DAddress) {
+ADS111x ADS_Default_Struct(uint8_t DAddress) {
 	ADS111x ret = {
 		ADS_PGA_4_096V,
 		ADS_CONFIG_MODE,
@@ -39,7 +39,7 @@ void ADS_InitSerial(ADS111x *adc) {
 
 }
 
-uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
+int16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 
 	// Store configs in buffer to send
 	Get_Configs(adc, channel, configBuffer);
@@ -59,7 +59,7 @@ uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel) {
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_REGISTER_SIZE, 1000);
 
-	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
+	return (int16_t) ((rxdata[0] << 8) | rxdata[1]);
 
 }
 
@@ -74,24 +74,24 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel) {
 	adc->memWrite(ADS_REG_CONFIG_PTR, configBuffer, ADS_REGISTER_SIZE, 1000);
 }
 
-uint16_t ADS_ReadLastConversion(ADS111x *adc) {
+int16_t ADS_ReadLastConversion(ADS111x *adc) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
 	// Read last conversion
 	adc->memRead(ADS_REG_CONVERSION_PTR, rxdata, ADS_REGISTER_SIZE, 1000);
 
-	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
+	return (int16_t) ((rxdata[0] << 8) | rxdata[1]);
 }
 
-uint16_t ADS_ReadRegister(ADS111x *adc, uint8_t regPtr) {
+int16_t ADS_ReadRegister(ADS111x *adc, uint8_t regPtr) {
 	// Set target adc
 	adc->selectDevice(adc->DAddress);
 
 	// Read config register
 	adc->memRead(regPtr, rxdata, ADS_REGISTER_SIZE, 1000);
 
-	return (uint16_t) ((rxdata[0] << 8) | rxdata[1]);
+	return (int16_t) ((rxdata[0] << 8) | rxdata[1]);
 }
 
 uint16_t ADS_ReadConfigs(ADS111x *adc) {

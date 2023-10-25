@@ -115,7 +115,7 @@ typedef struct {
  * @param DAddress the device address of the ADS
  * @returns the newly created ADS111x struct
  */
-inline ADS111x ADS_Default_Struct(uint8_t DAddress);
+ADS111x ADS_Default_Struct(uint8_t DAddress);
 
 /*
  * @brief Initializes ADC and I2C
@@ -130,7 +130,7 @@ void ADS_InitSerial(ADS111x *adc);
  * @param channel the analog channel number
  * @returns the 16-bit reading from the ADS
  */
-uint16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel);
+int16_t ADS_SampleChannel(ADS111x *adc, uint8_t channel);
 
 /*
  * @brief Requests the start of a conversion in the indicated channel
@@ -144,7 +144,7 @@ void ADS_StartConversion(ADS111x *adc, uint8_t channel);
  * @param adc the ADS111x from which to use configs and I2C
  * @returns the 16-bit reading from the ADS
  */
-uint16_t ADS_ReadLastConversion(ADS111x *adc);
+int16_t ADS_ReadLastConversion(ADS111x *adc);
 
 /*
  * @brief Reads the config register
